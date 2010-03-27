@@ -1,4 +1,6 @@
-This repository hosts a Haskell-based implementation of Perl 6.
+This repository hosts a Haskell-based implementation of Perl 6:
+
+    http://perl6.org/
 
 Currently it's mainly for historical/archival purposes and not
 in active development; it's known to build under GHC 6.10 using
@@ -8,3 +10,6 @@ The current goal is to maintain its installability for GHC 6.12
 under the new Haskell Platform:
 
     http://hackage.haskell.org/platform/
+
+Share and Enjoy!
+鳳
