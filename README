@@ -1,4 +1,10 @@
-This repository hosts a Haskell-based implementation of Perl6.
+This repository hosts a Haskell-based implementation of Perl 6.
 
 Currently it's mainly for historical/archival purposes and not
-yet in active development.
+yet in active development; it's known to build under GHC 6.10
+using the standard "cabal install Pugs" process.
+
+The current goal is to maintain its installability for GHC 6.12
+under the new Haskell Platform:
+
+    http://hackage.haskell.org/platform/
