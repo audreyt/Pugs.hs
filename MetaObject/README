@@ -1,0 +1,6 @@
+This library provides a class/object/role runtime as well as reflection
+facilities, based on the Perl 6 object system.
+
+At the moment it's extremely experimental, with no documentations and
+no examples, and as a whole may not make any sense except for existing
+users of Pugs. :-)

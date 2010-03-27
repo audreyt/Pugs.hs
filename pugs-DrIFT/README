@@ -1,0 +1,66 @@
+------------------------------------------------------------------------------
+
+			     DrIFT
+
+This package contains a source distribution of DrIFT, a tool for automatic
+derivation of Haskell class instances. DrIFT was formerly known as Derive.
+
+The current homepage is at:
+    <http://repetae.net/john/computer/haskell/DrIFT/>
+
+
+------------------------------------------------------------------------------
+
+Contents of this package:
+
+  - src         Directory with the source files of the DrIFT tool
+  - example     Directory with examples of using the DrIFT tool
+  - docs        Documentation
+
+------------------------------------------------------------------------------
+
+
+If you have pulled the source from the darcs repository, you must first build
+the autotools scripts by running
+
+ $ autoreconf -i
+
+To configure and install DrIFT from source or from Hackage, you have two options.
+
+
+ AUTOTOOLS
+
+You can install through the GNU Autools, like thus:
+
+  $ ./configure --prefix=<dir>
+  $ make install
+
+Where <dir> is the directory in which you want to install the tool. Note that
+a Haskell compiler (NHC or GHC) must be in your path. Otherwise, supply the
+location of a Haskell compiler as follows:
+
+  $ ./configure --prefix=<dir> --with-hc=<Haskell compiler>
+  $ make install
+
+ CABAL
+
+You can also install through Cabal, the standard Haskell packaging tool with the usual set of commands:
+
+      $ runhaskell Setup configure # optional --user --prefix=/home/user/bin
+      $ runhaskell Setup build
+      $ runhaskell Setup install # --user
+
+(Remember, from Darcs requires autoreconf to have been run! If you are installing from Hackage, autoreconf should have already been run in the source tarball.)
+
+------------------------------------------------------------------------------
+
+
+You may optionally set the environmental variable $DERIVEPATH to the list of directories you wish to search for modules.
+
+An example:
+
+ DERIVEPATH=/users/grad/nww/share/hugs/lib:/users/grad/nww/share/hugs/lib/hugs
+
+
+to run DrIFT, simply pass the Haskell file name as an argument. You may run
+'DrIFT --help' to get a summary of the various command line options

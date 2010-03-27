@@ -1,0 +1,34 @@
+[Changes for 0.45 - 2009-05-15]
+
+* Require Cabal 1.2.3+ to work with GHC 6.10 and above.
+* Change unsafe ByteString packing to safe packing to avoid memory corruption.
+  Contributed by: Nicolas Pouillard
+
+[Changes for 0.44 - 2008-06-21]
+
+* Tested against GHC-6.8.3; added the Pugs category; no functional changes.
+
+[Changes for 0.43 - 2008-06-21]
+
+* Properly documented the language extensions we use in the .cabal file.
+
+* No longer compiles with -O2 as Cabal automatically adds -O anyway.
+
+[Changes for 0.41 - 2008-02-19]
+
+* Update the ByteString function calls for the ByteStrings packaged
+  with GHC 6.8.2 (and up).
+  Improve Cabal metadata.
+  Contributed by: Gwern Branwen
+
+[Changes for 0.4 - 2007-06-16]
+
+* Add Haddock documentations; no functional changes.
+  Contributed by: Jaap Weel
+
+[Changes for 0.3 - 2007-05-21]
+
+* First working Hackage release: Unbreak the build by adding
+  missing extra-source-files.
+  Requested by: Bryan O'Sullivan
+

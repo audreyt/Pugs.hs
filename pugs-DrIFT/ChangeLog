@@ -1,0 +1,143 @@
+DrIFT-2.2.2:
+  * redid build model, collect deriving rules automatically.
+
+
+DrIFT-2.2.1:
+
+ Mon Aug 14 19:22:26 PDT 2006  John Meacham <john@repetae.net>
+  * update autotools to make autoreconf work
+  * update README to reflect there no longer being a 'reconf' script
+  * get rid of recursive make in docs/ subdirectory
+
+Thu Jan 25 21:04:02 PST 2007  John Meacham <john@repetae.net>
+  * add support for Data.Binary, move old Binary to BitsBinary
+
+
+DrIFT-2.2.0:
+
+Mon Apr 10 00:39:24 PDT 2006  John Meacham <john@repetae.net>
+  * add note about reconf script
+  * make the parser handle newtype deriving without bailing out
+  * fix bug in Ord deriving rule
+
+Wed Jan 18 03:59:21 PST 2006  David Roundy <droundy@darcs.net>
+  * fix typo in src/Makefile.am
+
+Sun Nov 27 02:59:14 PST 2005  Malcolm.Wallace@cs.york.ac.uk
+  * Change rule for Haskell2XmlNew into XmlContent, add Parse rule.
+  The Haskell2XmlNew class was a temporary staging post on the way to
+  developing a new XmlContent class, available in HaXml-1.14 onwards.
+  This patch updates the name, and the rule, to match the latest
+  developments.  It also adds support for the textual (non-XML) Parse
+  class, which is an experimental replacement for the Read class, using
+  monadic parser combinators.  This is also currently defined in
+  HaXml-1.14.
+  * docs should refer to StandardRules.hs, not .lhs
+  * fix docs for Hugs usage
+  * keep docs of --list option up-to-date
+
+Tue Nov 15 18:09:40 PST 2005  Einar Karttunen <ekarttun@cs.helsinki.fi>
+  * Hook Arbitrary into DrIFT proper
+  * Add UserRuleArbitrary
+
+Thu Nov  3 02:52:38 PST 2005  John Meacham <john@repetae.net>
+  * fix data derving for new versions of ghc
+
+DrIFT-2.1.2:
+
+  * fix rpm building, autoconf and some general make issues
+  * fix warnings in generated binary instances
+  * fix autoconf warnings
+
+Mon Sep 12 08:11:10 PDT 2005  Malcolm.Wallace@cs.york.ac.uk
+  * support for Haskell2XmlNew
+  The HaXml library Haskell2Xml has been extended to make secondary parsing
+  of the generic XML content tree into a typed value more robust.  An API
+  change means that a new version of the class (unimaginatively called
+  Haskell2XmlNew) exists, and this patch adds the ability to generate
+  parsing code for the new class.
+  * doc updates
+  Fix some very out-of-date statements in the manual.
+
+Tue May 31 16:17:12 PDT 2005  Samuel Bronson <naesten@gmail.com>
+  * avoid problems with hmake by invoking ghc -M directly
+  * Default to GHC to avoid NHC's tiny heap
+
+DrIFT-2.1.1:
+
+Tue Apr 19 21:09:13 PDT 2005  John Meacham <john@repetae.net>
+  * Be sure to flush handles pointing to files before quitting
+  * fix off-by-one line number error
+  * Remove reference to genconf
+  * Updated GenUtil.hs to fix nhc build
+
+
+DrIFT-2.1.0:
+ * added 'get' utility which creates foo_g for each label which returns its
+   value in a failing monad rather than raising an error.
+ * added 'from' utility which creates fromFoo for each constructors
+ * no longer an error for DERIVEPATH to not be set
+ * added -i to ignore directives in file. useful with -g and -r for testing
+ * added 'Query' which creates from, get, has, and is functions, but in a
+   class with an instance for the data type. useful for extensible data types
+ * added deriving rule for 'Monoid'
+ * added code subdirectory with support code
+
+DrIFT-2.0.4:
+ * added rule for GhcBinary
+ * now allows record syntax with newtype
+
+DrIFT-2.0.3:
+ * 'update' functions now pass through values without the specified field
+ * drift-ghc script added to be used with ghc by passing -pgmF drift-ghc -F
+ * documentation updated.
+
+DrIFT-2.0.2:
+ * deriving 'update' works with newer versions of ghc
+ * fixed bug in Show and Read instances
+
+DrIFT-2.0.1:
+ * fixed many warnings in generated code
+ * support for strict fields in constructors
+ * support for infix constructors
+
+DrIFT-2.0rc4:
+ * added help messages and categorization to rules
+ * small isLiterate fix (TODO use nhcs deliterizer)
+ * prints debug info in comment in chaseImports
+ * code cleanups
+ * integrated some changes from Strafunski 1.7
+ * autoconf/automake improvements
+
+DrIFT-2.0rc3:
+ * fixed version strings in generated files
+ * fix dependency generation
+ * fixed example test cases
+
+DrIFT-2.0rc2:
+ * autoconf/automake added
+ * texinfo is installed properly now
+ * build system cleanups
+ * works with both nhc and ghc again
+
+DrIFT-2.0rc1:
+ * new texinfo documentation, based on Noel's original manual.
+ * new option '-r' to only emit results and not original source
+ * new option '-g' to add new global rules to apply.
+ * cleaned up old non haskell98-compliant hacks
+
+jDrIFT-1:
+ * proper GetOpt command line handling, allows you to specify an
+   output file (-o) as well as list all possible derivations this
+   version was compiled with (-l)
+ * proper LINE pragmas in generated code
+ * smarter error handling in some cases, parser smarter sometimes.
+ * can deal with/ignore as appropriate some ghc extensions now
+ * rules to derive Typeable used by the Dynamic library.
+ * rules to derive Observable from the HOOD object debugger
+ * rules to derive Term, a generic term representation for generic
+   computation, can be used in a similar fashion to the Strafunski one,
+   but has a number of advantages, fully lazy constant time implode/explode
+   being the main one. (the external library is compatable with their work.)
+
+

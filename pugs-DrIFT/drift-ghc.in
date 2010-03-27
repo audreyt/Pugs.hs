@@ -1,0 +1,21 @@
+#!/bin/sh
+
+if [ -z "$1" -o -z "$2" -o -z "$3" ]; then
+cat <<EOF
+This is a driver script allowing DrIFT to be used seamlessly with ghc.
+in order to use it, pass '-pgmF drift-ghc -F' to ghc when compiling your
+programs.
+EOF
+exit 1;
+fi
+
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+if grep -q '{-!' "$2"; then
+    echo @bindir@/DrIFT "$2" -o "$3";
+    @bindir@/DrIFT "$2" -o "$3";
+else
+    echo "{-# LINE 1 \"$1\" #-}" > "$3"
+    cat "$2" >> "$3";
+fi

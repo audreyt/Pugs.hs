@@ -1,0 +1,18 @@
+DrIFT was originally created by
+
+	* Noel Winstanley
+
+An updated implementation for Haskell 98 was produced by:
+
+	* Malcolm Wallace
+
+The installation mechanism was improved by:
+
+	* Joost Visser (Joost.Visser@cwi.nl)
+
+The instance derivation rules for Typeable, Term (based on Dynamic),
+and other classes were contributed by
+
+	* John Meacham
+
+For details, see the darcs changelog
