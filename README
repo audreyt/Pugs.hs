@@ -1,15 +1,31 @@
-This repository hosts a Haskell-based implementation of Perl 6:
+This repository hosts a Haskell-based implementation of Perl 6.
+
+Currently, the Pugs.hs project exists mainly for historical/archival
+purposes, not for active development.
+
+For a host of active implementations of the Perl 6 Language, please refer
+to this website:
 
     http://perl6.org/
 
-Currently it's mainly for historical/archival purposes and not
-in active development; it's known to build under GHC 6.10 using
-the standard "cabal install Pugs" process; see INSTALL for details.
+---
 
-The current goal is to maintain its installability for GHC 6.12
-under the new Haskell Platform:
+Pugs.hs is known to build with GHC 6.10 and 6.12, preferably with the
+Haskell Platform:
 
     http://hackage.haskell.org/platform/
+
+One can directly install it with the standard Cabal/Hackage system:
+
+    cabal install Pugs
+
+Please refer to the INSTALL file for further details.
+
+---
+
+The goal during this hiatus is to continue maintaining Pugs.hs, so it remains
+installable with current and future editions of the Haskell Platform, and
+interoperable with current and future releases of the Perl 5 Language. :-)
 
 Share and Enjoy!
 鳳

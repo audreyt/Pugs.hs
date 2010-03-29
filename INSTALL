@@ -1,34 +1,52 @@
-The current recommended way to build Pugs is via cabal-install with GHC 6.10.
+The current recommended way to build Pugs is via cabal-install with the
+Haskell Platform.  The steps are:
 
-Follow these steps:
+1. Download and install the Haskell Platform:
 
-1. Make sure you have Cabal, HTTP, zlib and cabal-install installed
-   (in this order):
+    http://hackage.haskell.org/platform/
+
+Alternately, one can also install only the GHC compiler, and manually set up
+the following packages (in this order):
 
     http://hackage.haskell.org/cgi-bin/hackage-scripts/package/Cabal
     http://hackage.haskell.org/cgi-bin/hackage-scripts/package/HTTP
     http://hackage.haskell.org/cgi-bin/hackage-scripts/package/zlib
     http://hackage.haskell.org/cgi-bin/hackage-scripts/package/cabal-install
 
-If you're unsure how to install this, the instructions contained in the README
-file of Cabal will help you get started. Those instructions work for all the
-above packages.
+The instructions contained in the README file of Cabal contain more detailed
+setup instructions, which should work for all the packages above.
+
+(But then again, please consider simply installing the Haskell Platform. :-))
 
 2. Type the following commands:
 
     cabal update
     cabal install Pugs
 
-...and you're done.  To build an optimized Pugs for benchmarking or smoke
-testing, replace the second command with:
+...and it's done!
+
+To build an optimized Pugs for benchmarking or smoke testing, replace the
+second command with:
 
     cabal install -O2 Pugs
 
-3. To upgrade the current Pugs installation to the latest released version,
-   simply type the same two lines of commands above:
+(Unix-like systems might need `sudo` or `cabal install -p` to satisfy
+permission requirements.)
+
+3. To upgrade the current Pugs installation to the latest released version
+   on Hackage, the same two lines of commands would work:
 
     cabal update
     cabal install Pugs
 
-For installing pugs on cygwin via cabal, please follow these instructions:
-http://use.perl.org/~rurban/journal/36897
+4. To upgrade the current Pugs installation to the version in the repository,
+   simply build the repository copy like this:
+
+    cd Pugs
+    cabal install
+
+Cheers!
+鳳
+
+PS: For installing Pugs on Cygwin via Cabal, please refer to this note:
+    http://use.perl.org/~rurban/journal/36897
