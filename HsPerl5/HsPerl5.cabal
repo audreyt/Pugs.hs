@@ -1,0 +1,35 @@
+name:               HsPerl5
+version:            0.0.6
+copyright:          2008 Audrey Tang
+license:            BSD3
+license-file:       LICENSE
+author:             Audrey Tang <audreyt@audreyt.org>
+maintainer:         Audrey Tang <audreyt@audreyt.org>
+synopsis:           Haskell interface to embedded Perl 5 interpreter
+
+description:        This module provides a Haskell interface to embedded Perl 5 interpreter.
+
+                    Documentation and functionality is scarce at the moment; see test.hs for
+                    some basic usage examples.
+
+                    Currently supported features are:
+                        * Function calls
+                        * Method calls
+                        * Module imports
+                        * Callbacks
+
+                    Eventually, the entirety of Pugs.Embed.Perl5 and Pugs.Run.Perl5 will be
+                    carried into this module.
+
+stability:          experimental
+build-type:         Custom
+extensions:         ForeignFunctionInterface, TypeSynonymInstances,
+                    ScopedTypeVariables, FlexibleInstances,
+                    UndecidableInstances, OverlappingInstances, IncoherentInstances
+exposed-modules:    Language.Perl5
+build-depends:      base
+extra-source-files: README test.hs Configure.PL p5embed.h perlxsi.c
+hs-source-dirs:     src
+category:           Language, Pugs
+c-sources:          p5embed.c
+includes:           p5embed.h

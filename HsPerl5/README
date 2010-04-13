@@ -1,0 +1,13 @@
+This module provides a Haskell interface to embedded Perl 5 interpreter.
+
+Documentation and functionality is scarce at the moment; see test.hs for
+some basic usage examples.
+
+Currently supported features are:
+    * Function calls
+    * Method calls
+    * Module imports
+    * Callbacks
+
+Eventually the entirety of Pugs.Embed.Perl5 and Pugs.Run.Perl5 will be
+carried into this module.
