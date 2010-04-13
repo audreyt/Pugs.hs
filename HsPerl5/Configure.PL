@@ -6,12 +6,22 @@ use Cwd;
 use Config;
 use ExtUtils::Embed;
 
+sub tidy {
+    my $str = shift;
+    # If compiling for multiple archs, compile for none.
+    if ($str =~ /-arch \S+ +.*-arch \S+/) {
+        $str =~ s/-arch \S+//g;
+    }
+    return $str;
+}
+
 my $embed_flags = "-I" . cwd();
 my $ccdlflags = "";
-my $flags = "$Config{ccflags} $Config{ccdlflags} ";
+my $flags = tidy("$Config{ccflags} $Config{ccdlflags} ");
 
 if ($flags =~ /\S/) {
     $flags =~ s{([\\"'])}{\\$1}g;
+
     my @flags = grep { length $_ } split /\s+/, $flags;
 
     if ($^O eq 'MSWin32') {
@@ -39,7 +49,7 @@ if ($flags =~ /\S/) {
 
             $flags = "$Config{ccflags} $Config{ccdlflags}";
             $flags =~ s{([\\"'])}{\\$1}g;
-            @flags = grep { length $_ } split /\s+/, $flags;
+            @flags = grep { length $_ } split /\s+/, tidy($flags);
         }
         else {
             warn "Unrecognized libperl shared library: $Config{libperl}, proceeding anyway...\n";
@@ -49,12 +59,12 @@ if ($flags =~ /\S/) {
         $embed_flags .= " -optc-Ddirent=DIRENT";
     }
     else {
-        $embed_flags .= " -optc$_" for grep length, split(/\s+/, ccopts());
-        $embed_flags .= " -optl$_" for grep length, split(/\s+/, ldopts());
+        $embed_flags .= " -optc$_" for grep length, split(/\s+/, tidy(ccopts()));
+        $embed_flags .= " -optl$_" for grep length, split(/\s+/, tidy(ldopts()));
     }
 
-    $embed_flags .= " $_" for grep { /-[DIL]/ } split(/\s+/, ccopts());
-    $embed_flags .= " $_" for grep { /-[DIL]/ } split(/\s+/, ldopts());
+    $embed_flags .= " $_" for grep { /-[DIL]/ } split(/\s+/, tidy(ccopts()));
+    $embed_flags .= " $_" for grep { /-[DIL]/ } split(/\s+/, tidy(ldopts()));
 
     if ($Config{osname} eq 'cygwin') {
         my $cygpath = sub {

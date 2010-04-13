@@ -1,4 +1,3 @@
-{-# INCLUDE "p5embed.h" #-}
 module Language.Perl5
     ( Context(..)
     , ToSV(..)
