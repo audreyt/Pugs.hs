@@ -630,8 +630,6 @@ instance (Ord a) => Ord (Tree a) where
     compare _ _ = EQ
 instance Ord (TMVar a) where
     compare x y = compare (addressOf x) (addressOf y)
-instance Eq (TMVar a) where
-    x == y = addressOf x == addressOf y
 instance Show (TMVar a) where
     show = showAddressOf "tmvar"
 
