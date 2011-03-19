@@ -1,3 +1,8 @@
+[Changes for 0.50 - 2011-03-19]
+
+* parseYaml and emitYaml now work with Unicode Strings.
+  Reported by: voker57
+
 [Changes for 0.45 - 2009-05-15]
 
 * Require Cabal 1.2.3+ to work with GHC 6.10 and above.

@@ -24,6 +24,7 @@ import System.IO.Unsafe
 import GHC.Ptr (Ptr(..))
 import qualified Data.HashTable as Hash
 import qualified Data.ByteString.Char8 as Buf
+import Data.ByteString.UTF8 (fromString, toString)
 import Data.ByteString.Char8 (useAsCStringLen, useAsCString)
 import Data.ByteString (packCString, packCStringLen)
 
@@ -146,7 +147,7 @@ emitYamlFile file node = do
 -- | Dump a YAML node into a regular Haskell string
 
 emitYaml :: YamlNode -> IO String
-emitYaml node = fmap unpackBuf (emitYamlBytes node)
+emitYaml node = fmap toString (emitYamlBytes node)
 
 markYamlNode :: (YamlNode -> IO SyckNodePtr) -> SyckEmitter -> YamlNode -> IO ()
 {-
@@ -217,7 +218,7 @@ withTag node def f = maybe (f def) (`useAsCString` f) (n_tag node)
 -- | Parse a regular Haskell string
 
 parseYaml :: String -> IO YamlNode
-parseYaml = (`withCString` parseYamlCStr)
+parseYaml = parseYamlBytes . fromString
 
 -- | Given a file name, parse contents of file
 
@@ -280,7 +281,6 @@ nodeCallback badancs parser syckNode = mdo
             Hash.update badancs (ptr `minusPtr` nullPtr) node
 
     symId   <- fmap fromIntegral (syck_add_sym parser nodePtr)
-
     return symId
 
 badAnchorHandlerCallback :: BadAnchorTable -> SyckBadAnchorHandler
