@@ -1,4 +1,5 @@
 {-# OPTIONS_GHC -fglasgow-exts -fno-warn-orphans -fno-full-laziness -fno-cse -fallow-overlapping-instances #-}
+{-# LANGUAGE GADTs #-}
 
 {-|
     Primitive operators.

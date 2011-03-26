@@ -28,6 +28,7 @@ import Pugs.Eval
 import Pugs.Prim.Eval
 import Pugs.Embed
 import Pugs.Prelude 
+import Control.Exception (SomeException)
 import qualified Data.Map as Map
 import qualified Data.ByteString as Str
 import DrIFT.YAML
@@ -238,12 +239,15 @@ initPreludePC env = do
     if bypass then return env else do
         let dispProgress = (posName . envPos $ env) == (__"<interactive>")
         when dispProgress $ putStr "Loading Prelude... "
-        catchIO loadPreludePC $ \e -> do
+        catchIO loadPreludePC $ \(e :: SomeException) -> do
+            hPrint stderr e
+            {-
             case e of
                 IOException ioe
                     | isUserError ioe, not . null $ ioeGetErrorString ioe
                     -> hPrint stderr ioe
                 _ -> hPrint stderr e
+            -}
             when dispProgress $ do
                 hPutStr stderr "Reloading Prelude from source..."
             evalPrelude

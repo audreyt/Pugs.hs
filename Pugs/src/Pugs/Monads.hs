@@ -1,4 +1,5 @@
 {-# OPTIONS_GHC -fglasgow-exts -fallow-overlapping-instances #-}
+{-# LANGUAGE GADTs #-}
 
 {-|
     Common operations on Eval monad.
@@ -353,10 +354,12 @@ enterSub appKind sub action = do
     assertBlocks f name = forM_ (f (subTraitBlocks sub)) $ \cv -> do
         rv <- fromVal =<< (evalExp . Syn "block" . (:[]) . Syn "sub" . (:[]) . Val . castV $ cv)
         if rv then return () else die (name ++ " assertion failed") (subName sub)
+{-
     runBlocks' f = mapM_ (evalExp . Syn "block'" . (:[]) . Syn "sub" . (:[]) . Val . castV) (f (subTraitBlocks sub))
     assertBlocks' f name = forM_ (f (subTraitBlocks sub)) $ \cv -> do
         rv <- fromVal =<< (evalExp . Syn "block'" . (:[]) . Syn "sub" . (:[]) . Val . castV $ cv)
         if rv then return () else die (name ++ " assertion failed") (subName sub)
+-}
     typ = subType sub
     doCC :: (Val -> Eval b) -> [Val] -> Eval b
     doCC cc []  = cc undef

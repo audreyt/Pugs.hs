@@ -1,4 +1,5 @@
 {-# OPTIONS_GHC -cpp -fglasgow-exts -fno-warn-orphans -fallow-overlapping-instances -fallow-undecidable-instances -fparr #-}
+{-# LANGUAGE GADTs #-}
 
 module Pugs.AST.Internals (
     Eval(..),      -- uses Val, Env, SIO
@@ -1316,17 +1317,15 @@ instance Typeable1 IVar where
 
 instance Show VRef where
     show ref@(MkRef ivar) = case ivar of
-        IScalar x -> showAddr x
-        IArray  x -> showAddr x
-        IHash   x -> showAddr x
-        ICode   x -> showAddr x
-        IHandle x -> showAddr x
-        IRule   x -> showAddr x
-        IThunk  x -> showAddr x
-        IPair   x -> showAddr x
-        IVal    x -> show x
-        where
-        showAddr x = showAddressOf (showType (refType ref)) x
+        IScalar x -> showAddressOf (showType (refType ref)) x
+        IArray  x -> showAddressOf (showType (refType ref)) x
+        IHash   x -> showAddressOf (showType (refType ref)) x
+        ICode   x -> showAddressOf (showType (refType ref)) x
+        IHandle x -> showAddressOf (showType (refType ref)) x
+        IRule   x -> showAddressOf (showType (refType ref)) x
+        IThunk  x -> showAddressOf (showType (refType ref)) x
+        IPair   x -> showAddressOf (showType (refType ref)) x
+        IVal    x -> showAddressOf (showType (refType ref)) x
 
 instance Typeable VRef where
     typeOf (MkRef x) = typeOf x

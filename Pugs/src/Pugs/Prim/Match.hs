@@ -1,4 +1,5 @@
 {-# OPTIONS_GHC -fglasgow-exts -fno-warn-orphans -fallow-overlapping-instances #-}
+{-# LANGUAGE GADTs #-}
 
 module Pugs.Prim.Match (
     op2Match, rxSplit, rxSplit_n, pkgParents, pkgParentClasses
@@ -10,6 +11,7 @@ import Pugs.Types
 import Pugs.Config
 import Pugs.Prim.Code
 import Paths_Pugs
+import Control.Exception (SomeException)
 import qualified Data.Map as Map
 import qualified Data.Array as Array
 import qualified Pugs.Prim.FileTest as FileTest
@@ -49,7 +51,7 @@ doMatch cs rule@MkRulePGE{ rxRule = ruleStr } = do
     let ruleEngine | Just "PGE" <- rv   = evalPGE
                    | otherwise          = evalPCR
     pge  <- io $ ruleEngine pwd cs text subrules
-            `catchIO` (\e -> return $ show e)
+            `catchIO` (\(e :: SomeException) -> return $ show e)
     rv  <- tryIO Nothing $ fmap Just (readIO $ decodeUTF8 pge)
     let matchToVal PGE_Fail = VMatch mkMatchFail
         matchToVal (PGE_String str) = VStr str

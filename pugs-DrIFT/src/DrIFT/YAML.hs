@@ -59,7 +59,7 @@ type EmitAs = ReaderT SeenCache IO
 class Typeable a => YAML a where
     asYAML :: a -> EmitAs YamlNode
     asYAML x = lift $ do
-        ty <- Control.Exception.handle (const $ return "()") $
+        ty <- Control.Exception.handle (\(e :: SomeException) -> return "()") $
             evaluate (show (typeOf x))
         case ty of
             "()" -> return nilNode

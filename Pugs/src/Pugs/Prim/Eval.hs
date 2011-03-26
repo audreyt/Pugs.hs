@@ -21,6 +21,7 @@ import Pugs.Prelude
 import DrIFT.YAML
 import Data.Yaml.Syck
 import Data.Binary (decode)
+import Control.Exception (SomeException)
 import qualified Data.ByteString.Char8 as Bytes
 
 type Bytes        = Bytes.ByteString
@@ -157,7 +158,7 @@ op1EvalP6Y bytecode = do
 
 op1EvalP6Y' :: Bytes -> Eval Val
 op1EvalP6Y' bytecode = do
-    yml  <- io $ (`catchIO` (return . Left . show)) $
+    yml  <- io $ (`catchIO` (return . Left . (show :: SomeException -> String))) $
         fmap Right (parseYamlBytes bytecode)
     case yml of
         Right MkNode{ n_elem=ESeq (v:_) }
@@ -183,7 +184,7 @@ op1EvalP6Y' bytecode = do
 opEval :: EvalStyle -> FilePath -> String -> Eval Val
 opEval style path str = enterCaller $ do
     env     <- ask
-    let errHandler err = return env{ envBody = Val $ VError (VStr (show err)) [] }
+    let errHandler (err :: SomeException) = return env{ envBody = Val $ VError (VStr (show err)) [] }
     env'    <- io $ evaluateIO (parseProgram env path str) `catchIO` errHandler
     val     <- tryT $ local (const env') $ do
         evl <- asks envEval

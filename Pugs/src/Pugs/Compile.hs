@@ -1,4 +1,5 @@
 {-# OPTIONS_GHC -fglasgow-exts -fallow-undecidable-instances -fno-warn-orphans -funbox-strict-fields -cpp -fno-warn-deprecations -fallow-overlapping-instances #-}
+{-# LANGUAGE GADTs #-}
 
 {-|
     Compiler interface.
@@ -70,6 +71,8 @@ instance Compile Param TParam where
     @\@*END@ are compiled. -}
 instance Compile Pad [PIL_Decl] where
     compile pad = do
+        return [];
+        {- XXX!
         entries' <- mapM canCompile entries
         return $ concat entries'
         where
@@ -104,6 +107,7 @@ instance Compile Pad [PIL_Decl] where
         doCode name vsub = case subBody vsub of
             Prim _  -> return []
             _       -> compile (name, vsub)
+            -}
 
 eachM :: (Monad m) => [a] -> ((Int, a) -> m b) -> m [b]
 eachM = forM . ([0..] `zip`)

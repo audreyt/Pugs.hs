@@ -87,7 +87,7 @@ maybeM :: (Traversable f, Monad m)
        -> m (f b)    -- ^ Monad containing (@Just@ /result/) or @Nothing@
 maybeM f m = mapM m =<< f
 
-catchIO :: IO a -> (Control.Exception.Exception -> IO a) -> IO a
+catchIO :: Exception e => forall a. IO a -> (e -> IO a) -> IO a
 catchIO = Control.Exception.catch
 
 evaluateIO :: a -> IO a

@@ -40,6 +40,7 @@ import Data.IORef
 import qualified Data.Map as Map
 import qualified System.FilePath as FilePath (combine, splitFileName)
 import Control.Timeout
+import Control.Exception (SomeException)
 
 {-|
 The entry point of Pugs. Uses 'Pugs.Run.runWithArgs' to normalise the command-line
@@ -284,7 +285,7 @@ doExecuteHelper helper args = do
         file = foldl1 FilePath.combine (x ++ [helper])
     maybeFindFile :: FilePath -> MaybeT IO FilePath
     maybeFindFile pathname = do
-        dir <- liftIO $ getDirectoryContents path `catchIO` (const $ return [])
+        dir <- liftIO $ getDirectoryContents path `catchIO` (\(_ :: SomeException) -> return [])
         guard (filename `elem` dir)
         return pathname
         where
@@ -375,10 +376,12 @@ doRunSingle menv opts prog = (`catchIO` handler) $ do
     makeDumpEnv (Sym x y z w exp) = Sym x y z w $ makeDumpEnv exp
     makeDumpEnv exp               = Stmts (Ann (Cxt cxtItemAny) exp) (Syn "continuation" [])
 
+{-
     handler (IOException ioe) | isUserError ioe = do
         putStrLn "Internal error while running expression:"
         putStrLn $ ioeGetErrorString ioe
-    handler err = do
+-}
+    handler (err :: SomeException) = do
         putStrLn "Internal error while running expression:"
         putStrLn $ show err
 

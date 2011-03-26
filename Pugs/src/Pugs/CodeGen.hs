@@ -21,6 +21,7 @@ import Pugs.CodeGen.YAML (genParseYAML, genParseHsYAML, genYAML)
 import Pugs.CodeGen.Binary (genParseBinary)
 import Pugs.CodeGen.JSON (genJSON)
 import Pugs.Compile.Pugs (genPugs)
+import Control.Exception (SomeException)
 -- import Pugs.Compile.Haskell (genGHC)
 -- import Pugs.CodeGen.XML (genXML)
 import qualified Data.Map as Map
@@ -94,7 +95,7 @@ doLookup s = do
 
 codeGen :: String -> FilePath -> Env -> IO String
 codeGen s file env = do
-    gen <- catchIO (doLookup s) . const $ do
+    gen <- catchIO (doLookup s) $ \(_ :: SomeException) -> do
         fail $ "Cannot generate code for " ++ s ++ ": " ++ file
     rv <- runEvalIO env (gen file)
     case rv of

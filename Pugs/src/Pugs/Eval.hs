@@ -1,4 +1,5 @@
 {-# OPTIONS_GHC -fglasgow-exts -cpp -fno-warn-deprecations -fallow-overlapping-instances -fparr #-}
+{-# LANGUAGE GADTs #-}
 
 {-|
     Evaluation and reduction engine.
@@ -838,6 +839,7 @@ reduceSyn "rx" [exp, adverbs] = do
     where
     implies True  = id
     implies False = const 0
+    fromAdverb :: forall val. (Value val) => [(String, Val)] -> [String] -> Eval val
     fromAdverb _ [] = fromVal undef
     fromAdverb hv (k:ks) = case lookup k hv of
         Just v  -> fromVal v
@@ -1448,6 +1450,7 @@ doApply appKind origSub@MkCode{ subCont = cont, subBody = fun, subType = typ } i
     applyMacroResult code@VCode{}   = reduceApp (Val code) Nothing []
     applyMacroResult VUndef         = retEmpty
     applyMacroResult _              = fail "Macro did not return an AST, a Str or a Code!"
+    localEnv :: Eval a -> Eval a
     localEnv = case appKind of
         AKDisplaced  -> enterCaller
         _            -> id

@@ -4,6 +4,7 @@ module Pugs.AST.Eval where
 import Pugs.Internals
 import Pugs.Cont hiding (resetT)
 import System.IO.Error (try, IOError)
+import Control.Exception (SomeException)
 
 import Pugs.AST.SIO
 import {-# SOURCE #-} Pugs.AST.Internals
@@ -31,7 +32,7 @@ runEvalIO :: Env -> Eval Val -> IO Val
 runEvalIO env = fmap liftResult . runIO . (`runReaderT` env) . (`runContT` return) . runEvalT
 
 tryIO :: a -> IO a -> Eval a
-tryIO err = liftEval . io . (`catchIO` (const $ return err))
+tryIO err = liftEval . io . (`catchIO` (\(e :: SomeException) -> return err))
 
 {-|
 'shiftT' is like @callCC@, except that when you activate the continuation
@@ -178,7 +179,7 @@ guardIOexcept safetyNet x = do
 
 guardSTM :: STM a -> Eval a
 guardSTM x = do
-    rv <- stm $ fmap Right x `catchSTM` (return . Left)
+    rv <- stm $ fmap Right x `catchSTM` (\(e :: SomeException) -> return (Left e))
     case rv of
         Left e -> fail (show e)
         Right v -> return v

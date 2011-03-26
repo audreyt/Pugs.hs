@@ -1,4 +1,5 @@
 {-# OPTIONS_GHC -cpp -fglasgow-exts -fno-warn-orphans -fallow-overlapping-instances -fallow-undecidable-instances -fparr #-}
+{-# LANGUAGE GADTs #-}
 
 
 
@@ -158,10 +159,9 @@ instance YAML VRef where
             fmap (MkRef . IScalar) (fromYAML node :: IO VScalar)
         | s == packBuf "tag:hs:Pair"    =
             fmap pairRef (fromYAML node :: IO VPair)
-        | s == packBuf "tag:hs:IScalar" = newV newScalar
-        | s == packBuf "tag:hs:Array"   = newV newArray
-        | s == packBuf "tag:hs:Hash"    = newV newHash
-        where newV f = fmap MkRef (f =<< fromYAML node)
+        | s == packBuf "tag:hs:IScalar" = fmap MkRef (newScalar =<< fromYAML node)
+        | s == packBuf "tag:hs:Array"   = fmap MkRef (newArray =<< fromYAML node)
+        | s == packBuf "tag:hs:Hash"    = fmap MkRef (newHash =<< fromYAML node)
     fromYAML node = fail $ "Unhandled YAML node: " ++ show node
 instance YAML IHash where
      asYAML x = do

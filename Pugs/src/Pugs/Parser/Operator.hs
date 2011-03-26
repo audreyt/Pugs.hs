@@ -1,4 +1,5 @@
 {-# OPTIONS_GHC -cpp -fglasgow-exts -funbox-strict-fields -fno-full-laziness -fno-cse -fallow-overlapping-instances -fno-warn-orphans #-}
+{-# LANGUAGE GADTs #-}
 
 module Pugs.Parser.Operator where
 import Pugs.Internals
