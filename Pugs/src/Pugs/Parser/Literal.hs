@@ -15,7 +15,7 @@ import {-# SOURCE #-} Pugs.Parser
 
 ruleLit :: RuleParser Exp
 ruleLit = do
-    lvl <- gets s_bracketLevel
+    lvl <- s_bracketLevel `fmap` getState
     let blk | ConditionalBracket <- lvl = id
             | otherwise                 = (ruleBlockLiteral:)
     choice ( ruleDoBlock : blk
@@ -101,7 +101,7 @@ pairAdverb = try $ do
 regularAdverbPair :: RuleParser Exp
 regularAdverbPair = do
     key <- many1 wordAny
-    lvl <- gets s_bracketLevel
+    lvl <- s_bracketLevel `fmap` getState
     val <- lexeme ((optional ruleDot >> valueExp lvl) <|> return (Val $ VBool True))
     return $ if (all isDigit key)
         then App (_Var "&Pugs::Internals::base") Nothing [Val (VStr key), val]

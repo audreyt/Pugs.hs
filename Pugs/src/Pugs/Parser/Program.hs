@@ -173,14 +173,14 @@ ruleProgram = rule "program" $ do
     env     <- getRuleEnv
 
     topPad  <- genParamEntries SubRoutine [defaultArrayParam]
-    modify $ \s -> s{ s_protoPad = topPad }
+    updateState $ \s -> s{ s_protoPad = topPad }
 
     block   <- ruleBlockBody `finallyM` eof
     main    <- retVerbatimBlock SubPrim Nothing False $
         block{ bi_body = mergeStmts emptyExp $ bi_body block }
 
     -- We are still in the compile time.
-    modify $ \s -> s{ s_env = (s_env s){ envCompPad = Just (error "no comp pad") } }
+    updateState $ \s -> s{ s_env = (s_env s){ envCompPad = Just (error "no comp pad") } }
 
     -- Force a reclose-pad evaluation here by way of unsafeEvalExp.
     main'@(Val (VCode vc)) <- unsafeEvalExp $ Syn "" [unwrap main]

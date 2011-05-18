@@ -50,7 +50,7 @@ import qualified Data.Set as Set
 
 ruleBlock :: RuleParser BlockInfo
 ruleBlock = do
-    lvl <- gets s_bracketLevel
+    lvl <- s_bracketLevel `fmap` getState
     case lvl of
         StatementBracket    -> ruleBlock'
         _                   -> lexeme ruleVerbatimBlock
@@ -253,7 +253,7 @@ rulePackageBlockDeclaration = rule "package block declaration" $ do
     case rv of 
         Right (_, kind, pkgVal, env) -> do
             block   <- verbatimBraces ruleBlockBody
-            env'    <- ask
+            env'    <- getRuleEnv
             putRuleEnv env'{ envPackage = envPackage env }
             retInterpolatedBlock =<< retBlockWith (\body -> Syn "namespace" [kind, pkgVal, body]) block
         Left err -> fail err
@@ -276,7 +276,7 @@ rulePackageHead = do
     optional ruleVersionPart -- v
     optional ruleAuthorPart  -- a
     whiteSpace
-    env <- ask
+    env <- getRuleEnv
     newName <- case scope of
         Just SOur -> return $ cast (envPackage env) ++ "::" ++ name
         Nothing   -> return name
@@ -298,7 +298,7 @@ rulePackageHead = do
             return (Left $ "Circular role composition detected for " ++ sym ++ " '" ++ name ++ "'")
         _ -> do
             unsafeEvalExp (newPackage pkgClass newName parentClasses mixinRoles)
-            modify $ \state -> state
+            updateState $ \state -> state
                 { s_env = (s_env state)
                     { envPackage = cast newName
                     }
@@ -343,7 +343,7 @@ ruleSubDeclaration = rule "subroutine declaration" $ do
     typ''   <- option typ' returnsOrOf
     traits  <- ruleTraitsIsOnly
 
-    env <- ask
+    env <- getRuleEnv
     let pkg = cast (envPackage env)
         nameQualified | ':' `elem` name     = name
                       | isGlobal            = name
@@ -390,7 +390,7 @@ ruleSubDeclaration = rule "subroutine declaration" $ do
 
     -- Generate init pad for each of our params, as well as for ourselves...
     paramsPad   <- genParamEntries styp signature
-    modify $ \s -> s{ s_protoPad = paramsPad }
+    updateState $ \s -> s{ s_protoPad = paramsPad }
     block       <- ruleBlock
 
     let (fun, names, _) = extractNamedPlaceholders styp formal (bi_body block)
@@ -399,7 +399,7 @@ ruleSubDeclaration = rule "subroutine declaration" $ do
     when (isJust formal && (not.null) names) $
         fail "Cannot mix placeholder variables with formal parameters"
 
-    env <- ask
+    env <- getRuleEnv
 
     let template' = template
                 { subBody       = case isMulti of
@@ -517,7 +517,7 @@ ruleFormalParam opt = rule "formal parameter" $ do
             _       -> Noop
 
     -- XXX - RIGHT HERE, add this one to CompPad?
-    modify $ \state -> state
+    updateState $ \state -> state
         { s_knownVars = Map.insert (cast name) (fromJust . envCompPad $ s_env state) (s_knownVars state) }
 
     rv <- case opt of
@@ -564,7 +564,7 @@ ruleTraitDeclaration = try $ do
     --   is eval(...), ...    # sub call
     (aux, trait) <- ruleTrait ["is", "does"]
     lookAhead (eof <|> (oneOf ";}" >> return ()))
-    pkg <- asks envPackage
+    pkg <- envPackage `fmap` getRuleEnv
     let meta = _Var (':':'*':cast pkg)
         expMeta = Syn "="
             [ Syn "{}" [meta, Val (VStr aux)]
@@ -587,7 +587,7 @@ ruleMemberDeclaration = do
         lexeme $ choice
             [ ruleQualifiedIdentifier
             -- ::?CLASS, ::?ROLE, etc.
-            , char '?' >> ruleQualifiedIdentifier >> fmap cast (asks envPackage)
+            , char '?' >> ruleQualifiedIdentifier >> fmap cast (envPackage `fmap` getRuleEnv)
             ]
     attr <- ruleVarName
     (sigil:twigil:key) <- case attr of
@@ -600,7 +600,7 @@ ruleMemberDeclaration = do
     traits  <- ruleTraitsIsOnly
     optional $ do { symbol "handles"; ruleExpression }
     def     <- ruleParamDefault
-    env     <- ask
+    env     <- getRuleEnv
     let self = selfParam $ cast (envPackage env)
     paramsPad  <- genParamEntries SubMethod [self]
     -- manufacture an accessor, and register this slot into metaobject
@@ -745,11 +745,11 @@ ruleUsePerlPackage use lang = rule "use perl package" $ do
 ruleLoadPerlPackage :: String -> Bool -> String -> RuleParser Exp
 ruleLoadPerlPackage pkg use lang = do
     when use $ do   -- for &no, don't load code
-        env  <- ask
+        env  <- getRuleEnv
         env' <- unsafeEvalEnv $ if lang == "perl6"
             then (App (_Var "&use") Nothing [Val $ VStr pkg])
             else (App (_Var $ "&require_" ++ lang) Nothing [Val $ VStr pkg])
-        modify $ \state -> state
+        updateState $ \state -> state
             { s_env = env
                 { envGlobal  = envGlobal env'
                 }
@@ -936,7 +936,7 @@ ruleClosureTrait rhs = tryRule "closure trait" $ do
     -- Check for placeholder vs formal parameters
     unless (Set.null $ Set.delete varTopic params) $
         fail "Closure traits take no formal parameters"
-    env <- ask
+    env <- getRuleEnv
     let code = mkSub
             { subName       = cast name
             , subType       = SubBlock
@@ -950,7 +950,7 @@ ruleClosureTrait rhs = tryRule "closure trait" $ do
             -- We unshift END blocks to @*END at compile-time.
             -- They're then run at the end of runtime or at the end of the
             -- whole program.
-            pkg <- asks envPackage
+            pkg <- envPackage `fmap` getRuleEnv
             rv  <- unsafeEvalExp $ 
                 App (_Var "&unshift")
                     (Just (_Var (if pkg == mainPkg then "@Main::END" else "@*END")))
@@ -960,7 +960,7 @@ ruleClosureTrait rhs = tryRule "closure trait" $ do
             -- We have to exit if the user has written code like BEGIN { exit }.
             val <- possiblyExit =<< unsafeEvalExp (checkForIOLeak code)
             -- And install any pragmas they've requested.
-            env <- ask
+            env <- getRuleEnv
             let idat = unsafePerformSTM . readTVar $ envInitDat env
             install $ initPragmas idat
             clearDynParsers
@@ -976,7 +976,7 @@ ruleClosureTrait rhs = tryRule "closure trait" $ do
     where
     install [] = return $ ()
     install prag = do
-        env' <- ask
+        env' <- getRuleEnv
         let env'' = envCaller env'  -- not sure about this.
         case env'' of
             Just target -> do
@@ -1272,7 +1272,7 @@ ruleBlockVariants variants = do
     (styp, formal, lvalue) <- option (SubBlock, Nothing, False) $ choice variants
 
     paramsPad  <- genParamEntries styp (maybe (defaultParamFor styp) id formal)
-    modify $ \s -> s{ s_protoPad = paramsPad }
+    updateState $ \s -> s{ s_protoPad = paramsPad }
 
     block <- ruleBlock
     retBlock styp formal lvalue block
@@ -1295,7 +1295,7 @@ retVerbatimBlock styp formal lvalue block = expRule $ do
     -- Check for placeholder vs formal parameters
     when (isJust formal && (not.null) names) $
         fail "Cannot mix placeholder variables with formal parameters"
-    env <- ask
+    env <- getRuleEnv
     let sub = mkCode
             { isMulti       = False
             , subName       = __"<anon>"
@@ -1418,7 +1418,7 @@ ruleVarDecl = rule "variable declaration" $ do
         return (False, paramsToNameTypes params defType, accessors)
     makeAccessor prm = do
         -- Generate accessor for class attributes.
-        pkg         <- asks envPackage
+        pkg         <- envPackage `fmap` getRuleEnv
         paramsPad   <- genParamEntries SubPrim [selfParam $ cast pkg]
         let sub = mkPrim
                 { isMulti       = False
@@ -1465,11 +1465,11 @@ parseTerm = rule "term" $! do
         , fmap (Ann Parens) (verbatimParens ruleBracketedExpression)
         ] 
     pos <- getPosition
-    col <- gets s_wsColumn
+    col <- s_wsColumn `fmap` getState
     -- If we terminated on whitespace, don't apply postterms.
     if (col == sourceColumn pos)
         then do
-            ln  <- gets s_wsLine
+            ln  <- s_wsLine `fmap` getState
             if ln == sourceLine pos
                 then return term
                 else do
@@ -1797,7 +1797,7 @@ ruleApplyImplicitMethod = do
         char '.'
         option '.' (char '=') -- allow ".=foo" as a term to parse as "$_ .= $_.foo".
     insertIntoPosition "."
-    -- prevChar <- gets s_char
+    -- prevChar <- s_char `fmap` getRuleEnv
     fs <- many s_postTerm
     -- when (prevChar == '}') $ do
     --     pos <- getPosition
@@ -1951,7 +1951,7 @@ to swallow `{}.blah`.
 -}
 parseNoParenArgList :: RuleParser (Maybe Exp, [Exp])
 parseNoParenArgList = do
-    lvl <- gets s_bracketLevel
+    lvl <- s_bracketLevel `fmap` getState
     formal <- formalSegment lvl `sepEndBy1` (symbol ":")
     processFormals formal
 
@@ -2067,7 +2067,7 @@ ruleSigiledVar = (<|> ruleSymbolicDeref) $ do
         "INC" | "@" <- sigil           -> return (makeVar name)
         _ -> do
             -- Plain and simple variable -- do a lexical check.
-            state <- get
+            state <- getState
 
             let var         = cast name
                 env         = s_env state
@@ -2082,7 +2082,7 @@ ruleSigiledVar = (<|> ruleSymbolicDeref) $ do
                         let outerPads        = takeWhile (/= mpad) [ pc | PCompiling pc <- lexPads ]
                             markPad vars pad = Map.insertWith' Set.union pad (Set.singleton var) vars
                         -- traceM $ "Adding: " ++ show (var, outerPads)
-                        put state{ s_outerVars = foldl' markPad outerVars outerPads }
+                        setState state{ s_outerVars = foldl' markPad outerVars outerPads }
                     return (makeVar name)
                 _           -> do
                     -- If the variable is already defined as global, resolve it as such here.
@@ -2105,10 +2105,10 @@ ruleVar = do
                 postApp <- ruleInvocationArguments Nothing methName False
                 return $ Syn (shows (v_sigil var) "{}") [postApp (_Var "$__SELF__")]
             TImplicit -> do
-                knowns <- gets s_knownVars
+                knowns <- s_knownVars `fmap` getState
                 case Map.lookup var knowns of
                     Just pad -> do
-                        cpad <- asks envCompPad
+                        cpad <- envCompPad `fmap` getRuleEnv
                         when (Just pad /= cpad) $ addImplicitVarToPad var
                     _   -> addImplicitVarToPad var
                 return exp

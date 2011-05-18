@@ -550,7 +550,7 @@ simpleSpace :: RuleParser ()
 simpleSpace = do
     skipMany1 (satisfy isSpace)
     pos <- getPosition
-    modify (\s -> s{ s_wsLine = sourceLine pos, s_wsColumn = sourceColumn pos })
+    updateState (\s -> s{ s_wsLine = sourceLine pos, s_wsColumn = sourceColumn pos })
 
 multiLineComment :: RuleParser ()
 multiLineComment = do

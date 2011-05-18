@@ -21,7 +21,7 @@ retBlockWith f bi = return bi{ bi_body = f (bi_body bi) }
 -- at the start, so that they can be restored after parsing the body
 localBlock :: RuleParser Exp -> RuleParser BlockInfo
 localBlock m = do
-    state   <- get
+    state   <- getState
 
     -- XXX - Perhaps clone the protopad right here, for $_ etc?
     compPad <- newMPad (s_protoPad state)
@@ -31,7 +31,7 @@ localBlock m = do
         lexPads = (PCompiling compPad:envLexPads env)
         protoVars = Map.map (const compPad) (padEntries $ s_protoPad state)
 
-    put state
+    setState state
         { s_closureTraits   = (id : s_closureTraits state)
         , s_env             = env
             { envLexPads = lexPads  -- enter the scope
@@ -42,7 +42,7 @@ localBlock m = do
         }
 
     body    <- m
-    state'  <- get
+    state'  <- getState
 
     -- Remove from knownVars the bindings belonging to this scope.
     let outerKnownVars = Map.filter (/= compPad) (s_knownVars state')
@@ -51,7 +51,7 @@ localBlock m = do
             (t:ts)  -> (t, ts)
             _       -> (id, [])
 
-    put state
+    setState state
         { s_env = (s_env state')
             { envPackage = envPackage env
             , envLexical = envLexical env

@@ -93,8 +93,8 @@ possiblyApplyMacro app@(App (Var name) invs args) = do
         return $! fromObject o
     -- A Str should be (re)parsed.
     substMacroResult (Val (VStr code)) = fmap bi_body . localBlock $ do
-        parseProgram <- gets s_parseProgram
-        env          <- ask
+        parseProgram <- s_parseProgram `fmap` getState
+        env          <- getRuleEnv
         pos          <- getPosition
         case envBody (parseProgram env ("MACRO { " ++ show pos ++" }") code) of
             Val (err@VError{})  -> fail $ pretty err
