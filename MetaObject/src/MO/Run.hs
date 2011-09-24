@@ -12,6 +12,8 @@ import MO.Compile as C
 import StringTable.AtomMap as M
 import Data.Typeable hiding (cast)
 import qualified Data.Typeable as Typeable
+import Data.Sequence (Seq)
+import qualified Data.Sequence as Seq
 
 -- Little overview.
 --
@@ -126,5 +128,5 @@ __ = (`MkInvocant` emptyResponder)
 
 -- Helper to create a Arguments based on a list of Invocants
 mkArgs :: (Typeable1 m, Monad m) => [Invocant m] -> Arguments m
-mkArgs x = CaptSub{ c_feeds = [MkFeed { f_positionals = x, f_nameds = M.empty }] }
+mkArgs x = CaptSub{ c_feeds = Seq.singleton (MkFeed { f_positionals = Seq.fromList x, f_nameds = M.empty }) }
 

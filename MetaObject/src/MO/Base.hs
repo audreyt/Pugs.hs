@@ -2,11 +2,15 @@
 
 module MO.Base where
 import {-# SOURCE #-} MO.Run
+import Prelude hiding (foldl)
 import Data.Maybe
 import Data.Typeable
 import StringTable.Atom
 import MO.Capture
 import StringTable.AtomMap as AtomMap
+import Data.Foldable (foldl)
+import Data.Sequence (Seq)
+import qualified Data.Sequence as Seq
 
 -- Codeable is an abstraction of possible different pieces of code that
 -- a method may use as implementation. It's supposed to be used as member
@@ -71,7 +75,7 @@ namedArg args key = foldl findArg Nothing (c_feeds args)
     -- and the values are of type '[:a:]' and not 'a', because of this we get only
     -- the first one. "(!: 0)" means "(!! 0)" in parallel arrays notation.
     -- (is getting only the first one right??)
-    findArg Nothing MkFeed{ f_nameds = ns } = fmap head (AtomMap.lookup key ns)
+    findArg Nothing MkFeed{ f_nameds = ns } = fmap (`Seq.index` 0) (AtomMap.lookup key ns)
     findArg x       _                       = x
 
 stubInvocant :: (Typeable1 m, Monad m) => Invocant m
