@@ -12,6 +12,8 @@ import GHC.PArr
 import System.IO.Unsafe
 import Data.IORef
 import Data.Bits
+import Data.Sequence (Seq)
+import Data.Foldable (toList)
 import Data.List	( foldl' )
 import Data.Int		( Int32, Int64 )
 import Codec.Binary.UTF8.String (encodeString, decodeString)
@@ -22,6 +24,7 @@ import qualified Data.HashTable as Hash
 import qualified Data.ByteString as BS
 import qualified Data.ByteString.Char8 as S
 import qualified Data.ByteString.Lazy.Char8 as L
+import qualified Data.Sequence as Seq
 
 type Buf = S.ByteString
 
@@ -208,14 +211,12 @@ instance (YAML a) => YAML [a] where
     fromYAMLElem (ESeq s) = mapM fromYAML s
     fromYAMLElem e = fail $ "no parse: " ++ show e ++ ", expecting list of " ++ show (typeOf (undefined :: a))
 
-{-
-instance (YAML a) => YAML [:a:] where
+instance (YAML a) => YAML (Seq a) where
     asYAML xs = do -- asYAMLanchor xs $ do
-        xs' <- mapM asYAML (fromP xs)
+        xs' <- mapM asYAML $ toList xs
         (return . mkNode . ESeq) xs'
-    fromYAMLElem (ESeq s) = fmap toP (mapM fromYAML s)
+    fromYAMLElem (ESeq s) = fmap Seq.fromList (mapM fromYAML s)
     fromYAMLElem e = fail $ "no parse: " ++ show e ++ ", expecting array of " ++ show (typeOf (undefined :: a))
--}
 
 instance (YAML a, YAML b) => YAML (a, b) where
     asYAML (x, y) = do
@@ -431,9 +432,3 @@ hashByteString = BS.foldl' f golden
         where
         r :: Int64
         r = fromIntegral a * fromIntegral b
-
-{-
-instance Typeable1 [::] where
-    typeOf1 _ = mkTyConApp (mkTyCon "[::]") []
--}
-
