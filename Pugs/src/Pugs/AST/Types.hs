@@ -4,8 +4,9 @@ import Pugs.Internals
 import Pugs.Types
 import qualified Data.Set       as Set
 import qualified Data.Map       as Map
-
 import qualified Data.HashTable    as H
+import Data.Sequence (Seq)
+import qualified Data.Sequence as Seq
 
 import Pugs.AST.Eval
 import Pugs.AST.Utils
@@ -281,7 +282,7 @@ data CompUnit = MkCompUnit
     , cu_ast  :: !Exp        -- AST of unit
     } deriving (Show, Eq, Ord, Typeable) {-!derive: YAML_Pos !-}
 
-newtype IArray = MkIArray (TVar [:IVar VScalar:])
+newtype IArray = MkIArray (TVar (Seq (IVar VScalar)))
     deriving (Typeable)
 
 type IArraySlice        = [IVar VScalar]

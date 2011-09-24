@@ -112,8 +112,11 @@ import Pugs.AST.Scope
 import Pugs.AST.SIO
 import Pugs.Embed.Perl5
 import qualified Pugs.Val as Val
-import GHC.PArr
 import {-# SOURCE #-} Pugs.AST
+import Data.Sequence (Seq, (><), (<|), (|>), fromList)
+import Data.Foldable (toList)
+import qualified Data.Sequence as Seq
+import qualified Data.Foldable as F
 
 -- CPP Includes
 
@@ -362,7 +365,7 @@ getArrayIndex idx def getArr _ | idx < 0 = do
     a   <- stm $ readTVar iv
     let size = a_size a
     if size > abs (idx+1)
-        then return (a !: (idx `mod` size))
+        then return (a `Seq.index` (idx `mod` size))
         else errIndex def idx
 -- now we are all positive; either extend or return
 getArrayIndex idx def getArr ext = do
@@ -370,7 +373,7 @@ getArrayIndex idx def getArr ext = do
     a   <- stm $ readTVar iv
     let size = a_size a
     if size > idx
-        then return (a !: idx)
+        then return (a `Seq.index` idx)
         else case ext of
             Just doExt -> do { doExt; getArrayIndex idx def getArr Nothing }
             Nothing    -> errIndex def idx
@@ -728,7 +731,7 @@ newObject typ = case showType typ of
     "Item"      -> io $ fmap scalarRef $ newTVarIO undef
     "Scalar"    -> io $ fmap scalarRef $ newTVarIO undef
     "Array"     -> io $ do
-        iv  <- newTVarIO [::]
+        iv  <- newTVarIO mempty
         return $ arrayRef (MkIArray iv)
     "Hash"      -> do
         h   <- io (H.new (==) H.hashString)
@@ -863,7 +866,7 @@ newScalar = stm . (fmap IScalar) . newTVar
 newArray :: (MonadSTM m) => VArray -> m (IVar VArray)
 newArray vals = stm $ do
     tvs <- mapM newScalar vals
-    iv  <- newTVar (toP tvs)
+    iv  <- newTVar (fromList tvs)
     return $ IArray (MkIArray iv)
 
 newHash :: (MonadSTM m) => VHash -> m (IVar VHash)

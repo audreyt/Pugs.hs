@@ -9,6 +9,9 @@ import Pugs.Internals
 import qualified Data.ByteString.Char8 as Str -- XXX
 import qualified Data.Map as Map
 import qualified Data.Set as Set
+import Data.Sequence (Seq)
+import qualified Data.Sequence as Seq
+import qualified Data.Foldable as F
 
 type Str = Str.ByteString
 type Comp a = WriterT [a] Eval a
@@ -27,8 +30,8 @@ joinMany xs = Str.intercalate cm (filter (not . Str.null) xs)
 instance (Compile x) => Compile [x] where
     compile = compileList
 
-instance (Compile x) => Compile [:x:] where
-    compile xs = compWith "toP" [compileList (fromP xs)]
+instance (Compile x) => Compile (Seq x) where
+    compile xs = compWith "Seq.fromList" [compileList (F.toList xs)]
 
 instance (Compile x) => Compile (Set x) where
     compile xs = compWith "Set.fromDistinctAscList" [compileList (Set.toAscList xs)]

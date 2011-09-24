@@ -8,6 +8,7 @@ import Pugs.Internals
 import Data.Typeable (Typeable)
 import qualified Data.Map as Map
 import qualified StringTable.AtomMap as AtomMap
+import qualified Data.Foldable as F
 import Pugs.AST.Internals (envContext, anyToVal, anyFromVal)
 import Pugs.Types
 
@@ -40,10 +41,10 @@ dispatchPerl5 inv call
     | otherwise = do
         invSV   <- coerceVal inv
         subSV   <- liftIO . bufToSV . cast $ meth
-        posSVs  <- mapM coerceVal (fromP $ f_positionals feed)
+        posSVs  <- mapM coerceVal (F.toList $ f_positionals feed)
         namSVs  <- fmap concat . forM (AtomMap.toList (f_nameds feed)) $ \(key, vals) -> do
             keySV   <- liftIO (bufToSV $ cast key)
-            fmap concat . forM (fromP vals) $ \v -> do
+            fmap concat . forM (F.toList vals) $ \v -> do
                 valSV   <- coerceVal v
                 return [keySV, valSV]
         env     <- ask

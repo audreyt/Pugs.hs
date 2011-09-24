@@ -50,6 +50,9 @@ import qualified Data.Map       as Map
 import qualified Pugs.Val       as Val
 
 import qualified Data.HashTable    as H
+import Data.Sequence (Seq)
+import qualified Data.Sequence as Seq
+import qualified Data.Foldable as F
 
 import Data.Binary
 import GHC.Exts (unsafeCoerce#)
@@ -1397,10 +1400,6 @@ instance Binary (Exp -> Eval Val) where
     put _ = put ()
     get = return (const $ return VUndef)
 
-instance Binary [a] => Binary [:a:] where
-    put = put . fromP
-    get = fmap toP get
-
 instance Binary VRef where
     put (MkRef (ICode cv))
         | Just (mc :: VMultiCode) <- fromTypeable cv = do
@@ -1461,7 +1460,7 @@ newScalar' = (fmap IScalar) . newTVarIO
 newArray' :: VArray -> IO (IVar VArray)
 newArray' vals = do
     tvs <- mapM newScalar' vals
-    iv  <- newTVarIO (toP tvs)
+    iv  <- newTVarIO (Seq.fromList tvs)
     return $ IArray (MkIArray iv)
 
 instance Binary Pad where
