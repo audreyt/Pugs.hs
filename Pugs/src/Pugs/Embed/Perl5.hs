@@ -182,7 +182,7 @@ nullEnv = error "perl5 not embedded"
 
 module Pugs.Embed.Perl5 where
 import Pugs.Internals
-import Foreign
+import Foreign (Ptr, withArray, withArray0, deRefStablePtr, newStablePtr, peekArray0, nullPtr, advancePtr, StablePtr)
 import Foreign.C.Types
 import Foreign.C.String
 import {-# SOURCE #-} Pugs.AST.Internals
