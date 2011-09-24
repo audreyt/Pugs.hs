@@ -432,6 +432,8 @@ hashByteString = BS.foldl' f golden
         r :: Int64
         r = fromIntegral a * fromIntegral b
 
+{-
 instance Typeable1 [::] where
     typeOf1 _ = mkTyConApp (mkTyCon "[::]") []
+-}
 

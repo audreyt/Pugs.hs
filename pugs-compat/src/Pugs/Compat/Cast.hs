@@ -1,5 +1,4 @@
 {-# OPTIONS_GHC -fno-warn-unused-imports #-}
-{-# LANGUAGE PArr #-}
 module Pugs.Compat.Cast (
     (:>:)(..),
     (:<:)(..),
@@ -15,7 +14,6 @@ import Data.ByteString (ByteString)
 import Data.Sequence (Seq)
 import Numeric (showHex)
 import Data.Foldable (toList)
-import GHC.PArr (fromP, toP, mapP)
 import qualified Data.Sequence as Seq
 import qualified Data.Typeable as Typeable
 import qualified Data.ByteString.UTF8 as UTF8
@@ -29,11 +27,6 @@ import qualified Data.ByteString.UTF8 as UTF8
 -- Also, it must work for all values of type "b".
 -- 
 class ((:>:) a) b where
-    {-# SPECIALISE cast :: a -> a #-}
-    {-# SPECIALISE cast :: ByteString -> ByteString #-}
-    {-# SPECIALISE cast :: String -> ByteString #-}
-    {-# SPECIALISE cast :: ByteString -> String #-}
-    {-# SPECIALISE cast :: String -> String #-}
     cast :: b -> a
 
 class ((:<:) a) b where
@@ -43,8 +36,6 @@ instance (b :<: a) => (:>:) a b where
     cast = castBack
 
 {-# INLINE _cast #-}
-{-# SPECIALISE _cast :: String -> String #-}
-{-# SPECIALISE _cast :: String -> ByteString #-}
 _cast :: (a :>: String) => String -> a
 _cast = cast
 
@@ -52,12 +43,9 @@ instance (:<:) a a where castBack = id
 
 instance ((:>:) [a]) (Seq a) where cast = toList
 instance ((:<:) [a]) (Seq a) where castBack = Seq.fromList
-instance ((:>:) [a]) [:a:] where cast = fromP
-instance ((:<:) [a]) [:a:] where castBack = toP
 
 -- "map cast" can be written as "cast"
 instance (a :>: b) => ((:>:) [a]) [b] where cast = map cast
-instance (a :>: b) => ((:>:) [:a:]) [:b:] where cast = mapP cast
 
 fromTypeable :: forall m a b. (Monad m, Typeable a, Typeable b) => a -> m b
 fromTypeable x = case Typeable.cast x of

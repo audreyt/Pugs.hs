@@ -1,5 +1,4 @@
 {-# OPTIONS_GHC -fno-warn-unused-imports -fno-warn-orphans #-}
-{-# LANGUAGE PArr #-}
 {-|
     Internal utilities and library imports.
 
@@ -59,7 +58,6 @@ import Data.Word              as X hiding (Word)
 import Debug.Trace            as X 
 import GHC.Conc               as X (unsafeIOToSTM)
 import GHC.Exts               as X (unsafeCoerce#, Word(W#), Word#)
-import GHC.PArr               as X 
 import Network                as X 
 import Numeric                as X (showHex)
 import System.Cmd             as X 
@@ -93,6 +91,3 @@ instance Eq Dynamic where
     x == y = show x == show y
 instance Ord Dynamic where
     compare x y = compare (show x) (show y)
-
-instance Typeable1 [::] where
-    typeOf1 _ = mkTyConApp (mkTyCon "[::]") []
