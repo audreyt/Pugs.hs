@@ -1,4 +1,4 @@
-{-# OPTIONS_GHC -fglasgow-exts -fparr #-}
+{-# OPTIONS_GHC -fglasgow-exts #-}
 
 module MO.Run (
     module MO.Run,
@@ -11,7 +11,6 @@ import MO.Base
 import MO.Compile as C
 import StringTable.AtomMap as M
 import Data.Typeable hiding (cast)
-import GHC.PArr
 import qualified Data.Typeable as Typeable
 
 -- Little overview.
@@ -127,5 +126,5 @@ __ = (`MkInvocant` emptyResponder)
 
 -- Helper to create a Arguments based on a list of Invocants
 mkArgs :: (Typeable1 m, Monad m) => [Invocant m] -> Arguments m
-mkArgs x = CaptSub{ c_feeds = [: MkFeed { f_positionals = toP x, f_nameds = M.empty } :] }
+mkArgs x = CaptSub{ c_feeds = [MkFeed { f_positionals = x, f_nameds = M.empty }] }
 

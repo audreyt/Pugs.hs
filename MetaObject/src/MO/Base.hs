@@ -1,4 +1,4 @@
-{-# OPTIONS_GHC -fglasgow-exts -fparr #-}
+{-# OPTIONS_GHC -fglasgow-exts #-}
 
 module MO.Base where
 import {-# SOURCE #-} MO.Run
@@ -6,7 +6,6 @@ import Data.Maybe
 import Data.Typeable
 import StringTable.Atom
 import MO.Capture
-import GHC.PArr
 import StringTable.AtomMap as AtomMap
 
 -- Codeable is an abstraction of possible different pieces of code that
@@ -66,13 +65,13 @@ getInvocant CaptMeth{ c_invocant = x }  = Just x
 getInvocant _                           = Nothing
 
 namedArg :: (Typeable1 m, Monad m) => Arguments m -> Atom -> Maybe (Invocant m)
-namedArg args key = foldlP findArg Nothing (c_feeds args)
+namedArg args key = foldl findArg Nothing (c_feeds args)
     where
     -- Notice that each feed has a Map with the named arguments (given by f_nameds)
     -- and the values are of type '[:a:]' and not 'a', because of this we get only
     -- the first one. "(!: 0)" means "(!! 0)" in parallel arrays notation.
     -- (is getting only the first one right??)
-    findArg Nothing MkFeed{ f_nameds = ns } = fmap (!: 0) (AtomMap.lookup key ns)
+    findArg Nothing MkFeed{ f_nameds = ns } = fmap head (AtomMap.lookup key ns)
     findArg x       _                       = x
 
 stubInvocant :: (Typeable1 m, Monad m) => Invocant m

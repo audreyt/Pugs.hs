@@ -1,7 +1,6 @@
-{-# OPTIONS_GHC -fglasgow-exts -fparr #-}
+{-# OPTIONS_GHC -fglasgow-exts #-}
 module MO.Capture where
 
-import GHC.PArr
 import Data.Typeable
 import StringTable.Atom
 import StringTable.AtomMap as AtomMap hiding (map)
@@ -11,26 +10,22 @@ import Data.Monoid
 data Capt a
     = CaptMeth
         { c_invocant :: a
-        , c_feeds    :: [:Feed a:]
+        , c_feeds    :: [Feed a]
         }
     | CaptSub
-        { c_feeds    :: [:Feed a:]
+        { c_feeds    :: [Feed a]
         }
     deriving (Show, Eq, Ord, Typeable)
 
 
 -- | non-invocant arguments.
 data Feed a = MkFeed
-    { f_positionals :: [: a :]
-    , f_nameds      :: AtomMap [: a :] 
+    { f_positionals :: [a]
+    , f_nameds      :: AtomMap [a] 
         -- ^ maps to [:a:] and not a since if the Sig stipulates
         --   @x, "x => 1, x => 2" constructs @x = (1, 2).
     }
     deriving (Show, Eq, Ord, Typeable)
-
-instance Monoid [: a :] where
-    mempty = [: :]
-    mappend = (+:+)
 
 instance Monoid (Feed a) where
     mempty = MkFeed mempty mempty
@@ -40,5 +35,5 @@ instance Monoid (Feed a) where
 emptyFeed :: Feed a
 emptyFeed = mempty
 
-concatFeeds :: [: Feed a :] -> Feed a
-concatFeeds xs = MkFeed (concatMapP f_positionals xs) (foldlP AtomMap.union mempty (mapP f_nameds xs))
+concatFeeds :: [Feed a] -> Feed a
+concatFeeds xs = MkFeed (concatMap f_positionals xs) (foldl AtomMap.union mempty (map f_nameds xs))
