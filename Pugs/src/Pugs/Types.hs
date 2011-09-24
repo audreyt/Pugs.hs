@@ -29,6 +29,7 @@ module Pugs.Types
 where
 import Pugs.Internals
 import Data.Bits (shiftL)
+import Data.Array.IArray
 import qualified Data.Map as Map
 import qualified Data.HashTable as H
 import qualified Data.IntMap as IntMap
@@ -357,15 +358,18 @@ instance Show VarTwigil where
         TGlobal     -> ('*':)
 
 -- Cached Categ->ByteString mappings.
-catBufMap :: [:ByteString:]
-catBufMap = mapP (_cast . drop 2 . show) [:minBound..(maxBound :: VarCateg):]
+catBufMap :: Array Int ByteString
+catBufMap = listArray (min, max) $ map (_cast . drop 2 . show) [min..max]
+    where
+    min = fromEnum (minBound :: VarCateg)
+    max = fromEnum (maxBound :: VarCateg)
 
 -- Cached ByteString->Categ mappings.
 bufCatMap :: Map ByteString VarCateg
-bufCatMap = Map.fromList (fromP catBufMap `zip` [minBound..(maxBound :: VarCateg)])
+bufCatMap = Map.fromList [ (buf, toEnum i) | (i, buf) <- assocs catBufMap ]
 
 instance ((:>:) ByteString) VarCateg where
-    cast categ = catBufMap !: fromEnum categ
+    cast categ = catBufMap ! fromEnum categ
 
 instance ((:>:) (Maybe VarCateg)) ByteString where
     cast buf = Map.lookup buf bufCatMap
