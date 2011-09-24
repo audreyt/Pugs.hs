@@ -29,6 +29,9 @@ import Pugs.AST.Eval
 import Control.Monad.Fix
 import qualified StringTable.AtomMap as AtomMap
 import qualified Data.Typeable as Typeable
+import Data.Sequence (Seq)
+import qualified Data.Sequence as Seq
+import qualified Data.Foldable as F
 
 type Val = Invocant Eval
 type Call = MethodInvocation Eval
@@ -57,7 +60,7 @@ class (Show a, Typeable a, Ord a) => Boxable a where
             | isLower x = takeTypeName (x:acc) xs
             | otherwise = x:acc
 
-type MethodPrim a = (a -> [:Val:] -> Eval Val)
+type MethodPrim a = (a -> Seq Val -> Eval Val)
 
 class Boxable b => MethodPrimable a b | a -> b where 
     asPrim :: a -> MethodPrim b
@@ -82,9 +85,9 @@ instance (Boxable a, Boxable z) => MethodPrimable (a -> Eval z) a where
     asPrim f x _ = fmap mkVal (f x)
 
 instance (Boxable a, Boxable z) => MethodPrimable (a -> Val -> Eval z) a where
-    asPrim f x args = fmap mkVal (f x (args !: 0))
+    asPrim f x args = fmap mkVal (f x (args `Seq.index` 0))
 
-instance (Boxable a, Boxable z) => MethodPrimable (a -> [:Val:] -> Eval z) a where
+instance (Boxable a, Boxable z) => MethodPrimable (a -> Seq Val -> Eval z) a where
     asPrim f x args = fmap mkVal (f x args)
 
 instance (Boxable a, Boxable z) => MethodPrimable (a -> [Val] -> Eval z) a where
@@ -97,13 +100,13 @@ instance (Boxable a, Boxable b, Boxable z) => MethodPrimable (a -> [b] -> Eval z
 
 instance (Boxable a, Boxable b, Boxable z) => MethodPrimable (a -> b -> Eval z) a where
     asPrim f x args = do
-        y <- coerceVal (args !: 0)
+        y <- coerceVal (args `Seq.index` 0)
         fmap mkVal (f x y)
 
 instance (Boxable a, Boxable b, Boxable c, Boxable z) => MethodPrimable (a -> b -> c -> Eval z) a where
     asPrim f x args = do
-        y <- coerceVal (args !: 0)
-        z <- coerceVal (args !: 1)
+        y <- coerceVal (args `Seq.index` 0)
+        z <- coerceVal (args `Seq.index` 1)
         fmap mkVal (f x y z)
 
 (...) :: MethodPrimable a b => String -> a -> (ID, MethodPrim b)
@@ -147,7 +150,7 @@ mkBoxMethod (meth, fun) = MkMethod $ MkSimpleMethod
     { sm_name       = meth
     , sm_definition = MkMethodCompiled $ \args -> do
         inv  <- fromInvocant args :: Eval a
-        fun inv $ concatMapP f_positionals (c_feeds args)
+        fun inv $ F.foldr mappend mempty (fmap f_positionals (c_feeds args))
     }
 
 type PureClass = MOClass Eval
@@ -155,7 +158,7 @@ type PureClass = MOClass Eval
 instance (Show a, Typeable a, Ord a) => Boxable (Maybe a)
 
 instance Boxable a => Boxable [a]
-instance Boxable a => Boxable [:a:]
+instance Boxable a => Boxable (Seq a)
 
 instance Boxable ID
 instance Boxable PureClass where
@@ -167,12 +170,12 @@ _PureClass = mkPureClass "Class"
     ]
 
 instance ((:>:) Call) String where
-    cast = (`MkMethodInvocation` CaptSub{ c_feeds = [::] }) . _cast
+    cast = (`MkMethodInvocation` CaptSub{ c_feeds = mempty }) . _cast
 
 instance ((:>:) Call) ByteString where
-    cast = (`MkMethodInvocation` CaptSub{ c_feeds = [::] }) . cast
+    cast = (`MkMethodInvocation` CaptSub{ c_feeds = mempty }) . cast
 
 instance ((:>:) Call (ByteString, [Val], AtomMap Val)) where
     cast (meth, pos, named) = MkMethodInvocation (cast meth) CaptSub
-        { c_feeds = [: MkFeed (toP pos) (AtomMap.map (\x -> [:x:]) named) :]}
+        { c_feeds = Seq.singleton $ MkFeed (Seq.fromList pos) (AtomMap.map Seq.singleton named)}
 
