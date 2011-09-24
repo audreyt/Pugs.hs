@@ -1181,14 +1181,18 @@ interpolateVal (VRef (MkRef (IHash hv))) = do
 interpolateVal (VRef (MkRef (IPair pv))) = do
     (k, v) <- pair_fetch pv
     return [ Syn "named" [Val k, Val v] ]
-interpolateVal (VV vv) | Just (CaptSub{ c_feeds = feeds } :: ValCapt) <- castVal vv = error "TODO"
-{- return . F.toList $
-    [: Val (castV v) | v <- concatMapP f_positionals feeds :]
-    +:+ [: Syn "named" [Val (VStr $ cast k), Val (concatNamed v)] | (k, v) <- concatMapP (Seq.fromList . AtomMap.toList . f_nameds) feeds :]
-    where
-    concatNamed [:x:] = castV x
-    concatNamed xs    = VList (F.toList (mapP castV xs)) -}
+interpolateVal (VV vv)
+    | Just (CaptSub{ c_feeds = feeds } :: ValCapt) <- castVal vv
+    = let posPart = fmap (\v -> Val (castV v)) (concatMapSeq f_positionals feeds)
+          kvs = concatMapSeq (Seq.fromList . AtomMap.toList . f_nameds) feeds
+          namPart = fmap kvToExp kvs
+       in return (F.toList (posPart >< namPart))
 interpolateVal val = return [Val val]
+kvToExp (k, v) = Syn "named" [Val (VStr $ cast k), Val (concatNamed v)]
+concatMapSeq f xs = F.foldr mappend mempty (fmap f xs)
+concatNamed xs = case Seq.length xs of
+    1 -> castV (Seq.index xs 0)
+    _ -> VList (F.toList (fmap castV xs))
 
 isInterpolated :: Exp -> Bool
 isInterpolated (Ann _ exp)      = isInterpolated exp
