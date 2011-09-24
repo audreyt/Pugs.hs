@@ -83,8 +83,10 @@ ld-options: @ld_options
 .
 
 # Hack for OSX 10.6
-$info =~ s/-arch x86_64 (-arch i386) -arch ppc/$1/g;
-$info =~ s/-opt[lc]-arch -opt[lc]x86_64 (-opt[lc]-arch -opt[lc]i386) -opt[lc]-arch -opt[lc]ppc/$1/g;
+$info =~ s/-arch x86_64 (-arch i386)(?: -arch ppc)?/$1/g;
+$info =~ s/(-arch i386) -arch x86_64(?: -arch ppc)?/$1/g;
+$info =~ s/-opt[lc]-arch -opt[lc]x86_64 (-opt[lc]-arch -opt[lc]i386)(?: -opt[lc]-arch -opt[lc]ppc)?/$1/g;
+$info =~ s/(-opt[lc]-arch -opt[lc]i386) -opt[lc]-arch -opt[lc]x86_64(?: -opt[lc]-arch -opt[lc]ppc)?/$1/g;
 
 open INFO, ">Pugs.buildinfo" or die "Cannot write build info: $!";
 print INFO $info;
