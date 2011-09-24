@@ -1,7 +1,7 @@
 module Rules.YAML (rules) where
 
 import RuleUtils
-import List 
+import Data.List 
 import GenUtil
 
 type AlwaysPositional = Bool

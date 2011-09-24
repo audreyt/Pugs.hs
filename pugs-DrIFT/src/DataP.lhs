@@ -10,9 +10,9 @@ needs to be fixed.
 >where
 
 >import ParseLib2
->import Char
->import List
->import Monad
+>import Data.Char
+>import Data.List
+>import Control.Monad
 
 
 >data Statement = DataStmt | NewTypeStmt deriving (Eq,Show)

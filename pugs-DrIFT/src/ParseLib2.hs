@@ -31,8 +31,8 @@ module ParseLib2
     many1_offside,many_offside,off,
     opt, skipUntil, skipUntilOff,skipUntilParse,skipNest) where
 
-import Char
-import Monad
+import Data.Char
+import Control.Monad
 
 infixr 5 +++
 

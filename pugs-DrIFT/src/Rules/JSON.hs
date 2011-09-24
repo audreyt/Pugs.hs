@@ -1,7 +1,7 @@
 module Rules.JSON (rules) where
 
 import RuleUtils
-import List 
+import Data.List 
 import GenUtil
 
 rules = [

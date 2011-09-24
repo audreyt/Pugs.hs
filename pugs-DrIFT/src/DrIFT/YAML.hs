@@ -208,12 +208,14 @@ instance (YAML a) => YAML [a] where
     fromYAMLElem (ESeq s) = mapM fromYAML s
     fromYAMLElem e = fail $ "no parse: " ++ show e ++ ", expecting list of " ++ show (typeOf (undefined :: a))
 
+{-
 instance (YAML a) => YAML [:a:] where
     asYAML xs = do -- asYAMLanchor xs $ do
         xs' <- mapM asYAML (fromP xs)
         (return . mkNode . ESeq) xs'
     fromYAMLElem (ESeq s) = fmap toP (mapM fromYAML s)
     fromYAMLElem e = fail $ "no parse: " ++ show e ++ ", expecting array of " ++ show (typeOf (undefined :: a))
+-}
 
 instance (YAML a, YAML b) => YAML (a, b) where
     asYAML (x, y) = do

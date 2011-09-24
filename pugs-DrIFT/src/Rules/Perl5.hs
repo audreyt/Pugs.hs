@@ -1,7 +1,7 @@
 module Rules.Perl5 (rules) where
 
 import RuleUtils
-import List 
+import Data.List 
 import GenUtil
 
 rules = [

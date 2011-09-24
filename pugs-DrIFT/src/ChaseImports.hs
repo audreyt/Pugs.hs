@@ -24,10 +24,10 @@ import RuleUtils (Tag)
 import DataP
 import CommandP
 import ParseLib2
-import System
-import List
+import System.Environment
+import Data.List
 import qualified Unlit
-import Monad
+import Control.Monad
 import GenUtil
 
 try x = catch (x >>= return . Right) (return . Left)

@@ -91,14 +91,16 @@ module GenUtil(
     UniqueProducer(..)
     ) where
 
-import Char(isAlphaNum, isSpace, toLower,  ord)
-import List(group,sort)
-import List(intersperse, sortBy, groupBy)
-import Monad
-import qualified IO
-import qualified System
-import Random(StdGen, newStdGen, Random(randomR))
-import Time
+import Data.Char(isAlphaNum, isSpace, toLower,  ord)
+import Data.List(group,sort)
+import Data.List(intersperse, sortBy, groupBy)
+import Control.Monad (join, liftM, MonadPlus(..))
+import qualified System.IO as IO
+import qualified System.IO.Error as IO
+import qualified System.Environment as System
+import qualified System.Exit as System
+import System.Random(StdGen, newStdGen, Random(randomR))
+import System.Time
 
 {-# SPECIALIZE snub :: [String] -> [String] #-}
 {-# SPECIALIZE snub :: [Int] -> [Int] #-}

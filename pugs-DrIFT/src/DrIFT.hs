@@ -7,17 +7,17 @@ import ChaseImports
 import DataP
 import GenUtil
 import GetOpt
-import Char
-import IO hiding(try)
-import List (partition,isSuffixOf,sort, groupBy, sortBy)
-import Monad(unless)
+import Data.Char
+import System.IO
+import Data.List (partition,isSuffixOf,sort, groupBy, sortBy)
+import Control.Monad(unless)
 import PreludData(preludeData)
 import Pretty
 import RuleUtils (commentLine,texts)
 import RuleUtils(Rule,Tag)
 import Version
 import qualified Rules(rules)
-import qualified System
+import qualified System.Environment as System
 
 data Op = OpList | OpDerive | OpVersion
 
