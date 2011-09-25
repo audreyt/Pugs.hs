@@ -1,16 +1,16 @@
 This repository hosts a Haskell-based implementation of Perl 6.
 
-Currently, the Pugs.hs project exists mainly for historical/archival
-purposes, not for active development.
+Currently, the Pugs.hs project exists mainly for historical/archival purposes,
+not for active development. (Forks are, of course, very much welcome.)
 
-For a host of active implementations of the Perl 6 Language, please refer
-to this website:
+For a host of active implementations of the Perl 6 Language, please refer to
+this website:
 
     http://perl6.org/
 
 ---
 
-Pugs.hs is known to build with GHC 6.10 and 6.12, preferably with the
+Pugs.hs is known to build with GHC 6.10 through GHC 7.2.1, preferably with the
 Haskell Platform:
 
     http://hackage.haskell.org/platform/
