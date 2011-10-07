@@ -1,7 +1,7 @@
 The current recommended way to build Pugs is via cabal-install with the
 Haskell Platform.  The steps are:
 
-1. Download and install the Haskell Platform:
+0. Download and install the Haskell Platform:
 
     http://hackage.haskell.org/platform/
 
@@ -17,6 +17,12 @@ The instructions contained in the README file of Cabal contain more detailed
 setup instructions, which should work for all the packages above.
 
 (But then again, please consider simply installing the Haskell Platform. :-))
+
+
+1. Install ncurses and libperl dependencies:
+
+    # For Debian/Ubuntu
+    sudo apt-get install libncurses-dev libperl-dev
 
 2. Type the following commands:
 
