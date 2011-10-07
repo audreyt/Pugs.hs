@@ -14,10 +14,10 @@
 -- #include "pugs_version.h"
 
 #ifndef PUGS_VERSION
-#define PUGS_VERSION "6.2.13.15"
+#define PUGS_VERSION "6.2.13.20111008"
 #endif
 #ifndef PUGS_DATE
-#define PUGS_DATE "December 16, 2009"
+#define PUGS_DATE "October 8, 2011"
 #endif
 #ifndef PUGS_SVN_REVISION
 #define PUGS_SVN_REVISION 0
@@ -33,7 +33,7 @@ name       = "Perl6 User's Golfing System"
 versnum    = PUGS_VERSION
 date       = PUGS_DATE
 version    = name ++ ", version " ++ versnum ++ ", " ++ date ++ revision
-copyright  = "Copyright 2005-2010, The Pugs Contributors"
+copyright  = "Copyright 2005-2011, The Pugs Contributors"
 revnum     = show (PUGS_SVN_REVISION :: Integer)
 revision
     | rev <- revnum
