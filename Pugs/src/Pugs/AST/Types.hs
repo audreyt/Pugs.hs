@@ -426,7 +426,6 @@ instance Eq VProcess
 instance Ord VProcess where
     compare _ _ = EQ
 
--- instance Typeable Unique where typeOf _ = mkTyConApp (mkTyCon "Unique") []
 instance Typeable ProcessHandle where typeOf _ = mkTyConApp (mkTyCon "ProcessHandle") []
 instance Typeable Regex where typeOf _ = mkTyConApp (mkTyCon "Regex") []
 

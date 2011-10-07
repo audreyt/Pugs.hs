@@ -35,7 +35,7 @@ module Pugs.AST.Internals (
     VMatch(..), mkMatchFail, mkMatchOk, -- uses VList, VHash
     VCode(..), SubType(..), -- uses Pad, Exp, Type
     VJunc(..), JuncType(..), -- uss Val
-    VObject(..), -- uses VType, IHash, Unique
+    VObject(..), -- uses VType, IHash
     ObjectId(..),
     VType, -- uses Type
     VRule(..), -- uses Val

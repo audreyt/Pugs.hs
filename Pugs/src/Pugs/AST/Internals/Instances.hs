@@ -213,7 +213,6 @@ instance YAML ClassTree
 instance YAML Dynamic
 instance YAML ProcessHandle
 instance YAML Regex
-instance YAML Unique
 instance YAML VComplex
 instance YAML VHandle
 instance YAML VOpaque
@@ -1311,7 +1310,6 @@ instance Binary ClassTree where { get = undefined; put = undefined }
 instance Binary Dynamic where { get = undefined; put = undefined }
 instance Binary ProcessHandle where { get = undefined; put = undefined }
 instance Binary Regex where { get = undefined; put = undefined }
-instance Binary Unique where { get = undefined; put = undefined }
 instance Binary VComplex where { get = undefined; put = undefined }
 instance Binary VHandle where { get = undefined; put = undefined }
 instance Binary VControl where { get = undefined; put = undefined }
