@@ -1,0 +1,19 @@
+0) Join #perl6 on irc.freenode.net
+
+1) Get a commit bit
+
+2) Clone Pugs.hs from the perl6 organization on GitHub.
+
+    git clone git@github.com:perl6/Pugs.hs.git
+
+3) Follow INSTALL instructions to get deps installed
+
+4) Hack hack hack!
+
+5) Compile
+
+    cd Pugs/
+    make            # builds ./pugs executable
+    make install    # installs ./pugs as pugs and perl6 executables
+
+6) What was the big deal?
