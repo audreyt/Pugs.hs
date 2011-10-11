@@ -1,9 +1,10 @@
 INSTALLBIN = $(shell perl -MConfig -e 'print $$Config::Config{installbin}')
+SOURCES = $(shell find src -name *.hs)
 
 pugs: dist/build/pugs/pugs
 	cp $< $@
 
-dist/build/pugs/pugs: dist/setup-config src/Pugs/*
+dist/build/pugs/pugs: dist/setup-config $(SOURCES)
 	cabal build
 
 dist/setup-config:
