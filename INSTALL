@@ -3,12 +3,6 @@ Haskell Platform.  The steps are:
 
 0. Download and install the Haskell Platform:
 
-For Debian/Ubuntu:
-
-    sudo apt-get install haskell-platform
-
-else go to:
-
     http://hackage.haskell.org/platform/
 
 Alternately, one can also install only the GHC compiler, and manually set up
