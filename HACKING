@@ -46,3 +46,10 @@ and you should be fine:
     export PATH=$HOME/.cabal/bin:$PATH
     cabal update
     cabal install Pugs
+
+This was cobbled together from:
+
+    http://www.haskell.org/ghc/download_ghc_7_2_1
+    http://hackage.haskell.org/trac/hackage/wiki/CabalInstall
+    https://gist.github.com/1169332
+
