@@ -7,8 +7,8 @@ module Pugs.Prim.Numeric (
 import Pugs.Internals
 import Pugs.AST
 import Pugs.Types
-
 import Pugs.Prim.Lifts
+import GHC.Real (denominator)
 
 op2OrdNumeric :: Value b => (forall a. (Ord a) => a -> a -> b) -> Val -> Val -> Eval Val
 op2OrdNumeric f x y
@@ -119,13 +119,13 @@ op2Exp x y = do
     if num1 == (1 :: VNum) then return (VInt 1) else do
     num2 <- fromVal =<< fromVal' y
     if isNaN num2 then return (VNum (0/0)) else do
-    if num2 == (0 :: VNum) then return (VInt 1) else do
-    case reverse $ show (num2 :: VNum) of
-        ('0':'.':_) -> do
-            num1 <- fromVal =<< fromVal' x
-            if isDigit . head $ show (num1 :: VNum)
-                then op2Rat ((^^) :: VRat -> VInt -> VRat) x y
-                else op2Floating (**) x y
+    rat2 <- fromVal =<< fromVal' y
+    if rat2 == (0 :: VRat) then return (VInt 1) else do
+    case denominator (rat2 :: VRat) of
+        1 | rat2 > 0 -> do
+            if (num2 :: VNum) >= 0
+                then op2Rat ((^) :: VRat -> VInt -> VRat) x y
+                else op2Rat ((^^) :: VRat -> VInt -> VRat) x y
         _ -> op2Floating (**) x y
 
 op2Divide :: Val -> Val -> Eval Val
