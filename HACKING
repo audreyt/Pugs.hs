@@ -1,12 +1,16 @@
+== Becoming a Pugs Hacker
+
 0) Join #perl6 on irc.freenode.net
 
-1) Get a commit bit
+1) Ask for a commit bit
 
 2) Clone Pugs.hs from the perl6 organization on GitHub.
 
     git clone git@github.com:perl6/Pugs.hs.git
 
 3) Follow INSTALL instructions to get deps installed
+
+Or follow debian instructions for bleeding edge GHC below!
 
 4) Hack hack hack!
 
@@ -17,3 +21,28 @@
     make install    # installs ./pugs as pugs and perl6 executables
 
 6) What was the big deal?
+
+== Installing the latest GHC on a Debian system
+
+The current GHC (7.2.1) has some growing pains, but follow these instructions
+and you should be fine:
+
+    # Choose 32bit or 64bit
+    GHC=ghc-7.2.1-i386-unknown-linux.tar.bz2
+    GHC=ghc-7.2.1-x86_64-unknown-linux.tar.bz2
+
+    curl -O http://www.haskell.org/ghc/dist/7.2.1/$GHC
+    tar -xjvf $GHC
+    cd ghc-7.2.1
+    ./configure
+    sudo make install
+    cd -
+    curl -O http://hackage.haskell.org/packages/archive/cabal-install/0.10.2/cabal-install-0.10.2.tar.gz
+    tar -xzvf cabal-install-0.10.2.tar.gz
+    cd cabal-install-0.10.2
+    curl -O http://hackage.haskell.org/trac/hackage/raw-attachment/ticket/872/ghc7.diff
+    patch -p0 cabal-install.cabal ghc7.diff
+    sh bootstrap.sh
+    export PATH=$HOME/.cabal/bin:$PATH
+    cabal update
+    cabal install Pugs
