@@ -46,7 +46,7 @@ import Data.IntMap            as X (IntMap)
 import Data.List              as X ( (\\), find, genericLength, insert, sortBy, intersperse, partition, group, sort, genericReplicate, isPrefixOf, isSuffixOf, genericTake, genericDrop, unfoldr, nub, nubBy, transpose, delete, foldl')
 import Data.Map               as X (Map)
 import Data.Maybe             as X 
-import Data.Monoid            as X 
+import Data.Monoid            as X (Monoid(..))
 import Data.Ratio             as X 
 import Data.Sequence          as X (Seq, singleton)
 import Data.Set               as X (Set)
