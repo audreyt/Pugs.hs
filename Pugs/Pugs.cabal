@@ -1,9 +1,9 @@
 Name            : Pugs
-Version         : 6.2.13.20111008
+Version         : 6.2.13.20120203
 license         : BSD3
 license-file    : LICENSE
 cabal-version   : >= 1.2.3
-copyright       : 2005-2008, The Pugs Contributors
+copyright       : 2005-2012, The Pugs Contributors
 maintainer      : Audrey Tang <audreyt@audreyt.org>
 category        : Language, Pugs
 stability       : experimental
@@ -12,7 +12,7 @@ homepage        : http://pugscode.org/
 synopsis        : A Perl 6 Implementation
 description     : A Perl 6 Implementation
 author          : Audrey Tang <audreyt@audreyt.org>
-Tested-With:    GHC==6.8.2, GHC==6.8.3, GHC==6.10.1, GHC==6.12.1, GHC==7.0.1, GHC==7.2.1
+Tested-With:    GHC==6.8.2, GHC==6.8.3, GHC==6.10.1, GHC==6.12.1, GHC==7.0.1, GHC==7.2.1, GHC==7.4.1
 data-files      :
     blib6/pugs/perl5/lib/Parse/Yapp/Driver.pm
     blib6/pugs/perl5/lib/Parse/Yapp/Grammar.pm

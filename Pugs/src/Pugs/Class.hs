@@ -1,4 +1,4 @@
-{-# OPTIONS_GHC -fglasgow-exts -fparr -fallow-undecidable-instances -fallow-incoherent-instances #-}
+{-# OPTIONS_GHC -fglasgow-exts -fallow-undecidable-instances -fallow-incoherent-instances #-}
 
 {-|
     Class meta-model.  (object meta-meta-model)

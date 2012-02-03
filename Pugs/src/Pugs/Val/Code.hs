@@ -6,7 +6,7 @@ import Pugs.Types
 -- import Pugs.Val.Capture
 import Pugs.Class
 import Text.PrettyPrint
-import Data.Monoid
+import Data.Monoid (Monoid(..))
 import qualified Data.Map as Map
 import qualified Data.Set as Set
 import qualified Pugs.Types as Types

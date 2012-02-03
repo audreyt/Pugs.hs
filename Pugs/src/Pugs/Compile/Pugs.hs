@@ -1,4 +1,4 @@
-{-# OPTIONS_GHC -fglasgow-exts -fallow-overlapping-instances -fparr #-}
+{-# OPTIONS_GHC -fglasgow-exts -fallow-overlapping-instances #-}
 {-# LANGUAGE GADTs #-}
 
 module Pugs.Compile.Pugs (genPugs) where
