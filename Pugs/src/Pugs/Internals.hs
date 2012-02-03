@@ -1,4 +1,4 @@
-{-# OPTIONS_GHC -fglasgow-exts -fno-warn-orphans -fallow-undecidable-instances -fallow-overlapping-instances -fparr #-}
+{-# OPTIONS_GHC -fglasgow-exts -fno-warn-orphans -fallow-undecidable-instances -fallow-overlapping-instances #-}
 
 {-|
     Internal utilities and library imports.

@@ -1,4 +1,4 @@
-{-# OPTIONS_GHC -fglasgow-exts -fno-warn-deprecations -fno-warn-orphans -funbox-strict-fields -fallow-overlapping-instances -fparr #-}
+{-# OPTIONS_GHC -fglasgow-exts -fno-warn-deprecations -fno-warn-orphans -funbox-strict-fields -fallow-overlapping-instances #-}
 {-|
     Implementation Types.
 
@@ -130,7 +130,7 @@ enumCxt (CxtItem _)   = 0
 enumCxt (CxtSlurpy _) = 1
 
 -- | Return the 'Cxt' corresponding to the given P5 calling convention bits.
-cxtEnum :: (Show a, Num a) => a -> Cxt
+cxtEnum :: (Show a, Num a, Eq a) => a -> Cxt
 cxtEnum 128 = CxtVoid
 cxtEnum 0   = cxtItemAny
 cxtEnum 1   = cxtSlurpyAny

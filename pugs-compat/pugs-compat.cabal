@@ -1,5 +1,5 @@
 Name           : pugs-compat
-Version        : 0.0.6.20110925
+Version        : 0.0.6.20120203
 Build-type     : Simple
 Category       : Pugs
 License        : BSD3
@@ -9,7 +9,7 @@ Synopsis       : Portable Haskell/POSIX layer for Pugs
 Description    : Portable Haskell/POSIX layer for Pugs
 Cabal-Version  : >=1.2.3
 
-Tested-With:       GHC==6.8.2, GHC==6.8.3, GHC==6.10.1, GHC==6.12.1
+Tested-With:       GHC==6.8.2, GHC==6.8.3, GHC==6.10.1, GHC==6.12.1, GHC==7.4.1
 
 Library
   Extensions      : CPP, MagicHash, ScopedTypeVariables, MultiParamTypeClasses,
