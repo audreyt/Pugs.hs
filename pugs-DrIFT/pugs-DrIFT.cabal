@@ -1,5 +1,5 @@
 name:                pugs-DrIFT
-version:             2.2.3.20110925
+version:             2.2.3.20120203
 synopsis:            DrIFT with pugs-specific rules.
 description:         DrIFT is a type sensitive preprocessor for Haskell. It extracts type declarations
                      and directives from modules. The directives cause rules to be fired on the parsed
