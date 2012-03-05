@@ -1,0 +1,3 @@
+This repository is only for historical archival purposes; please visit
+[Pugs repository](https://github.com/perl6/Pugs.hs) for continued
+development.
